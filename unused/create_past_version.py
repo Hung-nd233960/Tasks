@@ -1,3 +1,8 @@
+"""
+This script is used to create a past version of a file in the repository.
+Function is no longer used in the project, but it is kept here for reference.
+"""
+
 import tempfile
 import os
 from typing import Optional
