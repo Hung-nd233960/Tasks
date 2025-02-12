@@ -13,7 +13,7 @@ from git import Repo
 
 
 # pylint: disable=C0116
-def get_changed_files(repo_path="."):
+def get_changed_files(repo_path: str = ".") -> list:
     repo = Repo(repo_path)
     changed_files = []
 
