@@ -60,7 +60,8 @@ The ultimate goal is to create a **hybrid task management system** that merges t
   Powerful search and reporting functionalities, with filters for due dates, priorities, and tags.
 
 ---
-
+## Bucket List
+Natural language integration (today, tomorrow,...)
 ## 🛠 Tech Stack
 
 - **Python 3.x**  

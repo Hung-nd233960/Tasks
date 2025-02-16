@@ -13,8 +13,8 @@ Returns:
 
 # pylint: disable=missing-function-docstring
 from datetime import datetime
-from model import TaskDetails
-from task_creator import create_task_line
+from func.model import TaskDetails
+from func.task_line_creator import create_task_line
 
 
 def create_task_file(task: TaskDetails, directory: str = "tasks/"):

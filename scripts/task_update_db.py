@@ -22,7 +22,7 @@ Returns:
 # pylint: disable=C0116
 # mypy: ignore-errors
 import sqlite3
-from model import TaskDetails, convert_date, generate_task_hash
+from scripts.func.model import TaskDetails, convert_date, generate_task_hash
 
 
 def update_task_to_db(task: TaskDetails, db_path: str = "db/tasks.db"):

@@ -2,7 +2,7 @@
 # mypy: ignore-errors
 
 from datetime import datetime
-from model import TaskDetails
+from func.model import TaskDetails
 
 
 def create_task_line(task: TaskDetails) -> str:

@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring
 import sqlite3
 from typing import Optional
-from model import TaskDetails
+from scripts.func.model import TaskDetails, generate_task_hash
 
 
 def get_stored_task_hash(task: TaskDetails, db: str = "db/tasks.db") -> Optional[str]:
@@ -38,3 +38,27 @@ def get_stored_task_hash(task: TaskDetails, db: str = "db/tasks.db") -> Optional
     except sqlite3.Error as e:
         print(f"Database error: {e}")
         return None
+
+
+def is_duplicate_task(task: TaskDetails, db_path: str = "db/tasks.db") -> bool:
+    """
+    Check if a task already exists in the database by comparing its hash.
+
+    Parameters:
+        task (TaskDetails): The task to check.
+        db_path (str): Path to the SQLite database.
+
+    Returns:
+        bool: True if the task is a duplicate, False otherwise.
+    """
+    task_hash = generate_task_hash(task)
+
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT COUNT(*) FROM tasks WHERE task_hash = ?", (task_hash,))
+    result = cursor.fetchone()
+
+    conn.close()
+
+    return result[0] > 0

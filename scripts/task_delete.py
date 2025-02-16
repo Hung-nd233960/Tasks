@@ -19,7 +19,7 @@ Example:
 # pylint: disable=C0116
 import sqlite3
 from typing import Optional
-from model import TaskDetails
+from scripts.func.model import TaskDetails
 
 
 def delete_task_from_db(

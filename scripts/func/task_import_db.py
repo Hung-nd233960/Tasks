@@ -15,17 +15,18 @@ db_path : str, optional
     Path to the SQLite database file. Defaults to "db/task.db".
 Returns
 -------
-None
-    This function does not return a value but commits changes to the database.
+int: The ID of the newly inserted task record.
 """
 
 # pylint: disable=C0116
 import sqlite3
-from datetime import datetime
-from model import TaskDetails, convert_date, generate_task_hash
+from typing import Optional
+from func.model import TaskDetails, convert_date, generate_task_hash
 
 
-def insert_new_task_to_db(task: TaskDetails, db_path: str = "db/tasks.db"):
+def insert_new_task_to_db(
+    task: TaskDetails, db_path: str = "db/tasks.db"
+) -> Optional[int]:
     """
     Insert a task into the SQLite database with SHA-1 hash for tracking changes.
     """
@@ -52,12 +53,17 @@ def insert_new_task_to_db(task: TaskDetails, db_path: str = "db/tasks.db"):
             task_hash,  # Insert the hash here
         ),
     )
+    new_task_id = cursor.lastrowid
 
     conn.commit()
     conn.close()
 
+    return new_task_id
+
 
 if __name__ == "__main__":
+    from datetime import datetime
+
     TASK = TaskDetails(
         id=1,
         content="Complete task parser function",
@@ -67,5 +73,5 @@ if __name__ == "__main__":
         due_date=datetime.strptime("2022-01-03", "%Y-%m-%d"),
         priority=2,
     )
-    insert_new_task_to_db(TASK)
-    print("Task inserted successfully.")
+    task_id = insert_new_task_to_db(TASK)
+    print(f"Task {task_id} inserted successfully.")

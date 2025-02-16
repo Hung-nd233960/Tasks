@@ -21,7 +21,7 @@ Returns:
 import re
 from datetime import datetime
 from typing import Optional
-from model import TaskDetails
+from scripts.func.model import TaskDetails
 
 # TaskParser function to parse task lines
 
