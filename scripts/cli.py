@@ -1,27 +1,23 @@
 """
-This module defines a command-line interface (CLI) for managing tasks with two primary commands:
+This module defines a command-line interface (CLI) for managing tasks with three primary commands:
 - init: Initializes the system.
 - add: Adds a new task.
-Functions:
-----------
-validate_date(date_str):
-    Validates that the provided date string follows the YYYY-MM-DD format.
-    Returns a datetime.date object if valid, or raises an argparse.ArgumentTypeError if invalid.
-add_task(_args):
-    Creates and stores a new task using TaskDetails. Defaults the task status to "undone",
-    sets the other attributes (content, schedule date, start date, due date, and priority)
-    based on user input, and prints a confirmation message with the generated task ID.
+- delete: Deletes a task by ID or by (scheduled-date AND content).
+
 Command-line Usage:
 -------------------
 Run 'python cli.py' followed by the desired command and corresponding arguments.
 For example:
     python cli.py add "Complete report" --schedule-date 2023-10-05
+    python cli.py delete --id 5
+    python cli.py delete --schedule-date 2023-10-05 --content "Complete report"
 """
 
 import argparse
 import datetime
 from func.model import TaskDetails
 from new_task_creator import new_task_creator
+from task_delete import delete_task_from_db
 
 
 def validate_date(date_str):
@@ -47,8 +43,30 @@ def add_task(_args):
     )
 
     task_id = new_task_creator(task)
-
     print(f"Task added successfully with ID {task_id}.")
+
+
+def delete_task(_args):
+    """Handles the 'delete' command by removing a task by ID or by (scheduled-date AND content)."""
+    if _args.id:
+        success = delete_task_from_db(task_id=_args.id)
+    elif _args.schedule_date and _args.content:
+        success = delete_task_from_db(
+            scheduled_date=_args.schedule_date, content=_args.content
+        )
+    else:
+        print(
+            "Error: Provide either --id OR both --schedule-date and --content to delete a task."
+        )
+        return
+
+    print("Warning: Prioritize deletion by ID first.")
+    print("Warning: Deleting a task will not take the ID back.")
+
+    if success:
+        print("Task deleted successfully.")
+    else:
+        print("Task not found or could not be deleted.")
 
 
 # CLI setup
@@ -77,8 +95,16 @@ add_parser.add_argument(
 add_parser.add_argument(
     "--priority", type=int, choices=range(1, 5), help="Priority level (1-4)"
 )
-
 add_parser.set_defaults(func=add_task)
+
+# Add 'delete' command
+delete_parser = subparsers.add_parser("delete", help="Delete a task")
+delete_parser.add_argument("--id", type=int, help="Task ID")
+delete_parser.add_argument(
+    "--schedule-date", type=validate_date, help="Scheduled date (YYYY-MM-DD)"
+)
+delete_parser.add_argument("--content", type=str, help="Task description")
+delete_parser.set_defaults(func=delete_task)
 
 # Parse arguments
 args = parser.parse_args()

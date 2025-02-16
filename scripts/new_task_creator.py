@@ -1,3 +1,4 @@
+# pylint: disable = C0114
 from typing import Optional
 from func.model import TaskDetails
 from func.create_task_file import create_task_file

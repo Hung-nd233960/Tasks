@@ -1,7 +1,7 @@
-# pylint: disable=missing-module-docstring
+# pylint: disable=missing-module-docstring, missing-function-docstring
 import os
-from db_init import init_db
-from git_init import initialize_git_repo
+from init.db_init import init_db
+from init.git_init import initialize_git_repo
 
 # Initialize the database and Git repository
 

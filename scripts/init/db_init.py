@@ -48,7 +48,7 @@ def init_db(db_name="tasks.db"):
     )
     cursor.execute(
         """
-        CREATE INDEX idx_task_hash ON tasks (hash)
+        CREATE INDEX IF NOT EXISTS idx_task_hash ON tasks (hash)
         """
     )
 
