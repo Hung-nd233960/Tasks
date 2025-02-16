@@ -17,7 +17,7 @@ import argparse
 import datetime
 from func.model import TaskDetails
 from new_task_creator import new_task_creator
-from task_delete import delete_task_from_db
+from task_delete import delete_task
 
 
 def validate_date(date_str):
@@ -46,14 +46,12 @@ def add_task(_args):
     print(f"Task added successfully with ID {task_id}.")
 
 
-def delete_task(_args):
+def delete_task_handler(_args):
     """Handles the 'delete' command by removing a task by ID or by (scheduled-date AND content)."""
     if _args.id:
-        success = delete_task_from_db(task_id=_args.id)
+        success = delete_task(task_id=_args.id)
     elif _args.schedule_date and _args.content:
-        success = delete_task_from_db(
-            scheduled_date=_args.schedule_date, content=_args.content
-        )
+        success = delete_task(scheduled_date=_args.schedule_date, content=_args.content)
     else:
         print(
             "Error: Provide either --id OR both --schedule-date and --content to delete a task."

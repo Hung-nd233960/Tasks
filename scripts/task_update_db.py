@@ -25,55 +25,45 @@ import sqlite3
 from scripts.func.model import TaskDetails, convert_date, generate_task_hash
 
 
-def update_task_to_db(task: TaskDetails, db_path: str = "db/tasks.db"):
+def update_task_to_db(task: TaskDetails, db_path: str = "db/tasks.db") -> bool:
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
-    # Prepare dynamic SET clause based on non-None fields
-    set_clauses = []
-    values = []
+    # Prepare fields for update (including None values explicitly)
+    set_clauses = [
+        "content = ?",
+        "status = ?",
+        "scheduled_date = ?",
+        "start_date = ?",
+        "due_date = ?",
+        "priority = ?",
+        "hash = ?",
+        "modified_date = datetime('now')",
+    ]
 
-    if task.get("content") is not None:
-        set_clauses.append("content = ?")
-        values.append(task["content"])
+    values = [
+        task["content"],
+        task["status"],
+        convert_date(task["scheduled_date"]) if task["scheduled_date"] else None,
+        convert_date(task["start_date"]) if task["start_date"] else None,
+        convert_date(task["due_date"]) if task["due_date"] else None,
+        str(task["priority"]) if task["priority"] is not None else None,
+        generate_task_hash(task),  # Always update hash
+    ]
 
-    if task.get("status") is not None:
-        set_clauses.append("status = ?")
-        values.append(task["status"])
+    # Append task ID for WHERE clause
+    values.append(task["id"])
 
-    if task.get("scheduled_date") is not None:
-        set_clauses.append("scheduled_date = ?")
-        values.append(convert_date(task["scheduled_date"]))
-
-    if task.get("start_date") is not None:
-        set_clauses.append("start_date = ?")
-        values.append(convert_date(task["start_date"]))
-
-    if task.get("due_date") is not None:
-        set_clauses.append("due_date = ?")
-        values.append(convert_date(task["due_date"]))
-
-    if task.get("priority") is not None:
-        set_clauses.append("priority = ?")
-        values.append(str(task["priority"]))
-
-    new_hash = generate_task_hash(task)
-    set_clauses.append("hash = ?")
-    values.append(new_hash)
-
-    # Always update modified_date
-    set_clauses.append("modified_date = datetime('now')")
-
-    # Construct final SQL query
+    # Construct and execute query
     sql = f"""
         UPDATE tasks
         SET {', '.join(set_clauses)}
         WHERE id = ?
     """
 
-    values.append(str(task["id"]))
-
-    # Execute the query
     cursor.execute(sql, values)
+    success = cursor.rowcount > 0  # Check if any row was updated
     conn.commit()
     conn.close()
+
+    return success
