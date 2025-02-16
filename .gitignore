@@ -3,7 +3,9 @@
 __pycache__/
 *.pyc
 *.pyo
-
+.mypy_cache/
+./venv
+./vscode
 # Ignore temporary or log files
 *.log
 *.tmp
