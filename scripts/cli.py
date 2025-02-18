@@ -18,6 +18,8 @@ import datetime
 from func.model import TaskDetails
 from new_task_creator import new_task_creator
 from task_delete import delete_task
+from init_system import init
+from reset_system import reset
 
 
 def validate_date(date_str):
@@ -73,7 +75,12 @@ subparsers = parser.add_subparsers(dest="command")
 
 # Add 'init' command
 init_parser = subparsers.add_parser("init", help="Initialize the system")
-init_parser.set_defaults(func=lambda args: print("Initializing..."))
+init_parser.set_defaults(func=init)
+
+# Add 'reset' command
+reset_parser = subparsers.add_parser("reset", help="Reset the system")
+reset_parser.set_defaults(func=lambda _args: reset())
+
 
 # Add 'add' command
 add_parser = subparsers.add_parser("add", help="Add a new task")

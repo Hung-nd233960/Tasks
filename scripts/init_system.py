@@ -14,8 +14,12 @@ def setup_project_structure():
         os.makedirs(directory, exist_ok=True)
 
     gitignore_content = """
+
 # Ignore compiled Python files
 __pycache__/
+.mypy_cache/
+.venv/
+.vscode/
 *.pyc
 *.pyo
 
@@ -23,6 +27,7 @@ __pycache__/
 *.log
 *.tmp
 *.swp
+    
     """
 
     with open(".gitignore", "w", encoding="utf-8") as file:
